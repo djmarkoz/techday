@@ -1,27 +1,34 @@
 VERBOSE_1 := -v
 VERBOSE_2 := -v -x
 
-.PHONY: all build test run vendor clean cleanall tools docker docker-run help
+.PHONY: all build install uninstall test run vendor clean cleanall docker docker-run help
 
 WHAT := techday-cli
 		
-all: test build
+all: build test
 
 build: vendor
 	for target in $(WHAT); do \
-		$(BUILD_ENV_FLAGS) go build $(VERBOSE_$(V)) -o bin/$$target -ldflags "-X $(REPOPATH).Version=$(VERSION)" ./cmd/$$target; \
+		$(BUILD_ENV_FLAGS) go build $(VERBOSE_$(V)) -o bin/$$target  ./cmd/$$target; \
+	done
+
+install: vendor
+	for target in $(WHAT); do \
+		$(BUILD_ENV_FLAGS) go install $(VERBOSE_$(V)) ./cmd/$$target; \
+	done
+
+uninstall:
+	for target in $(WHAT); do \
+		rm $$GOPATH/bin/$$target; \
 	done
 
 test:
-	go test ./...
+	go test ./pkg/... ./cmd/... ./internal/...
 	
 vet:
-	go vet ./...
-	
-fmt:
-	goimports -l -w .
-
-run: build
+	go vet ./pkg/... ./cmd/... ./internal/...
+		
+run:
 	./bin/techday-cli
 
 vendor:
@@ -32,14 +39,11 @@ clean:
 
 cleanall: clean
 	rm -rf ./vendor
-
-tools:
-	go get golang.org/x/tools/cmd/goimports
-	
+		
 docker:
 	docker build -t techday-cli .
 	
-docker-run: docker
+docker-run:
 	docker run --rm -ti techday-cli    
 
 help:

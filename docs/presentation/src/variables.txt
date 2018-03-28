@@ -1,0 +1,14 @@
+package main
+
+// START OMIT
+// Java
+int x;
+String s = "Hello Avisi!";
+public static final double PI = 3.14;
+
+// Go
+var x int
+s := "Hello Avisi!"
+const Pi = 3.14
+
+// END OMIT

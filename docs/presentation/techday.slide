@@ -1,0 +1,388 @@
+Go(lang) for CLI tools
+Getting to know Go
+29 Mar 2018
+
+Mark Freriks
+Software Developer, Avisi
+m.freriks@avisi.nl 
+
+* What is Go
+_Go_is_an_open_source_programming_language_originally_from_Google_that_makes_it_easy_to_build_simple,_reliable,_and_efficient_software._
+.image gopher.png 400 400
+.caption Go is a fast, statically typed, compiled language that feels like a dynamically typed, interpreted language.
+: Go is expressief, beknopt, duidelijk en efficient. 
+: Go Concurrency mechanisme maakt het makkelijk om programmas te schrijven om het meeste uit de huidige multicore machines te halen.
+: Go's type system maakt het mogelijk om flexibele en modulaire programmes te schrijven.
+: Go compileerd snel naar machine code en heeft de gemakken van Garbage collection en de kracht van runtime reflectie. 
+
+
+* Why Go
+- Answer to the challenges of scale at Google
+.image redmonk.png 453 640
+: Antwoord op uitdagingen van grote schaal van bij Google 2009
+: Zowel problemen wanneer er veel ontwikkelaars werken aan een stuk stofware, maar ook wanneer het aantal systemen groot is.
+: Go is in korte tijd naar plek 16 op de RedMonk lijst gestegen.
+: Interesssant want Go is niet echt een general purpose language, geen script-taal, niet JVM compatible, maar sterke alternatieven zoals C en C++ 
+
+* Why Go for Java developers
+- Good to learn new languages, makes us better programmers
+- Better choice than Java in some situations (low-level proxy, cli's, ..)
+- Lightweight and fast
+: Voordat we doorgaan, laten we eerst af waarom Go voor Java developers.
+: Ik denk dat door het leren van nieuwe talen we betere programmeurs worden. Dit geld niet alleen voor Go, maar ook bijv Kotlin of Scala
+: Voor sommige situaties is Go een betere keus dan Java. Denk bijv aan een proxy server, of het bouwen van CLIs.
+: Go applicaties zijn lightweight en snel
+
+* Go and Java - Similarities
+- C-style
+- Compiled
+- Statically typed
+- Object-Oriented, but different
+- Cross-platform
+- Garbage collection
+- Memory safety
+- Type assertions
+- Reflection
+: Laten we eerst kijken naar de overeenkomsten tussen Go en Java
+
+* Go and Java - Differences
+- No VM
+- Syntax differences
+- Build-in strings, arrays and maps
+- Type inference
+- Closures
+- Concurrency
+: En wat zijn de verschillen?
+
+* Go and Java - Differences (1)
+- No classes
+- No inheritance
+- No exceptions
+- No annotations
+- No generics
+- No final
+- No overloaded methods
+- etc
+: kracht zit in alles wat er niet is
+: tegenhanger van Scala, qua features
+
+* Why So Different
+- Language design in the service of software engineering
+- Familiar, yet modern
+- High performance, compile and runtime
+- Balance between complexity and convenience
+.caption Less is exponentially more by Rob Pike
+: Go is niet ontwikkeld in een paar dagen zoals Javascript
+: Er is heel lang overnagedacht over welke features er moeten zijn en welke niet.
+: Door hele ervaren ontwikkelaars, uit de unix wereld.
+: Lijst met Goals, bekend, snel compile- en runtime, een balans tusssen complex en handig
+* Go Go Go ...
+: Lets Go Go Go naar wat voorbeeld code ;)
+
+* Hello World
+.play src/hello.go
+: We zien hier een hello world voorbeeld in Go
+: Eerste regel de package
+: Dan import
+: main functie
+: die roep functie Println van package fmt met string "Hello Avisi!"
+: UITVOEREN
+
+* Variables and Constants
+.code src/variables.txt /START OMIT/,/END OMIT/
+: constanten kunnen alleen de basic type zijn en bepaald bij het compilen
+: geen static, final public. Alles is static, geen classes. 
+: Alles met hoofdletter is public, rest is private
+
+* Control Flow - for
+ for i := 0; i < n; i++ {
+   ... // basic
+ }
+
+ for i < n {
+   ... // like while in Java
+ }
+ 
+ for {
+   ... // endless loop
+ }
+: Geen haakjes
+: Geen while loop, maar ook for loop
+: Infinite loop
+
+* Control Flow - if
+  if x < limit {
+    ...
+  } else {
+    ... 
+  }  
+: Geen haakjes
+: Zelfde als in Java
+
+* Control Flow - if (1)
+  if x := math.Pow(a, n); x < limit {
+    ...
+  } else {
+    ... 
+  }  
+: een variabele initialiseren in de IF
+: zie hoe dit lijkt op de for-loop, zelfde idee
+
+* Control Flow - switch
+  switch lang {
+  case "java":
+    ...
+  case "go":
+    ...
+  default:
+    ...
+  }
+: geen automatische fallthrough
+
+* Control Flow - switch (1)
+  switch lang {
+  case getLanguage():
+    ...
+  case "go":
+    ...
+  default:
+    ...
+  }
+: alles kan in de cases, ook expressies, niet alleen constanten
+
+* Control Flow - switch (2)
+  switch lang := ui.Ask(); lang {
+  case getLanguage():
+    ...
+  case "go":
+    ...
+  default:
+    ...
+  }
+: variable initialiseren in de switch
+: gelijk aan de for en if, consistent
+
+* Control Flow - switch (3)
+  switch true {
+    ...
+  }
+  
+  t := time.Now()
+  switch {
+  case t.Hour() < 12:
+    fmt.Println("It's before noon")
+  default:
+    fmt.Println("It's after noon")
+  }
+: chaining if if-else else kan worden vervangen met een switch, wordt idomatic Go genoemd
+
+* Basic Types
+  var s string
+  var r rune
+  var b bool
+  var i int
+: string is lijst van UTF8 chars, dat zijn de runes
+: ? Hoe lang is een int in java, 32 bit? 64 bit? ligt aan platform -> 32 bit
+: in C en C++ ligt het aan platform
+: in Go ligt het ook aan platform
+
+* Basic Types - Go vs Java
+  int8      == byte
+  int16     == short
+  int32     == int
+  int64     == long
+  float32   == float
+  float64   == double
+  
+: ? Hoe lang is een int in java, 32 bit? 64 bit? ligt aan platform -> 32 bit
+: in C en C++ ligt het aan platform
+: in Go ligt het ook aan platform
+
+* Pointers
+  var s string
+  var p *string = &s
+  
+
+* Collections
+
+* Arrays
+.play src/collections/arrays.go /^func arrays/,/^}
+- Passed by value
+*tip:* do not use arrays; use slices
+
+* Slices
+.play -edit src/collections/slices.go /^func slices/,/^}
+- Lightweight views backed by arrays
+- Passed by reference
+- `len()`, `cap()`, `copy()`, `append()`, `range`
+
+* Maps
+.play src/collections/maps.go /^func maps/,/^}
+: zelfde als Java HashMaps
+: maar in de taal ingebouwd
+: moeten make gebruiken of direct initialiseren.
+: get is altijd veilig -> zero value
+  
+  
+* Functions
+  // Java
+  public static int sum(int a, int b) {
+    return a + b;
+  }
+  
+  // Go
+  func Sum(a, b int) int {
+    return a + b
+  }
+: lijkt heel erg op Java, op wat syntax na
+
+* Functions (1)
+  // Java
+  public static int sum() throws Exception {
+  
+    .. throw new Exception("..");
+    
+    return 1;
+  }
+  
+  // Go
+  func Sum() (int, error) {
+  
+    .. return 0, fmt.Errorf("..") 
+    
+    return 1, nil
+  }
+: meerdere return values
+: wordt vooral gebruikt voor errors
+
+* Exceptions Go Away
+
+* Errors
+.code src/errors.go
+
+* Defer
+  resp, err := http.Get(url)
+  if err != nil {
+    ...
+  }
+  defer resp.Body.Close()  
+.play -edit src/defer.go /START OMIT/,
+: zelfde als finally
+: altijd aangeroepen aan het einde van de functie
+
+* Closures
+.play -edit src/fibonacci.go
+: echte closures, niet zoals lambdas in Java 8
+: wat is het verschil? met closures kan je je kan externe variabele aanpassen
+: functions are first class, kunnen worden doorgegeven etc
+
+* Structs & Interfaces
+
+* Structs
+.play src/types/structs.go /START OMIT/,/END OMIT/
+- Structs are like classes in Java
+- No need for setters and getters
+- Fields starting with a capital letter will be exported to other packages
+- There are no constructors
+
+* Structs (1) - methods
+.play -edit src/types/functions.go /START OMIT/,/END OMIT/
+
+* Interfaces
+.code src/interfaces.go /^type Greeter interface/,/^}
+- Implicit; there is no explicit declaration
+- Best interfaces only have 1 method
+- Interfaces are called like Reader, Writer, Closer etc.
+
+* Interfaces - example
+.code src/interfaces.go /START DEF OMIT/,/END DEF OMIT/
+.code src/interfaces.go /START IMPL OMIT/,/END IMPL OMIT/
+
+* Interfaces - example (1)
+.play src/interfaces.go /^func main/,/^}
+
+* Interfaces - example (2)
+.play src/interfaces-2.go 
+
+* Values vs Pointers
+.play src/pointers.go  /^func pointers/,/^}
+
+* Empty interface
+.code src/interfaces.go /START EMPTY OMIT/,/END EMPTY OMIT/
+- All types match empty `interface{}`
+- Empty `interface{}` should be avoided if possible
+- `interface{}` is like `Object` in Java
+
+* Zero & nil values
+.play src/zero.go  /^func zero/,/^}
+- All values are by default their zero value
+- Pointers are by default nil
+
+* Composition
+- Structs and Interfaces can be composed by multiple other Structs or Interfaces
+.code src/composition.go /START OMIT/,/END OMIT/
+
+* Composition - structs
+.code src/composition-structs.go 
+
+* Concurrency
+
+* Go routines
+- Like lightweight threads; many thousands are normal
+- Libraries should just be blocking, the user can wrap them easily in Go routines
+.play src/concurrency/goroutines.go /START OMIT/,/END OMIT/
+
+* Channels
+.link https://blog.golang.org/share-memory-by-communicating Share memory by communicating
+.caption Do not communicate by sharing memory; instead, share memory by communicating.
+.play src/concurrency/channels.go /START OMIT/,/END OMIT/
+
+* Select
+.play -edit src/concurrency/select.go  /^func main/,/^}
+
+* Go Tools
+- *go*run* (run a single .go file)
+- *go*build* (build a go program)
+- *go*install* (install a package globally)
+- *go*test* (unit test and benchmarks)
+- *go*get* (dependency management)
+- *gofmt* (format source code)
+- *goimports* (format source code and organize imports)
+- *golang/dep* (dependency management - like npm)
+
+
+* Why Go for CLI
+- Static compiled (no dependenies)
+- No JVM
+- Lightweight and fast (low memory overhead)
+- Small (also small Docker containers)
+- Very good standard library for HTTP(2) and JSON
+- Good library for CLI
+
+* CLI
+
+.image cobra.png 169 533
+
+.caption Cobra is both a library for creating powerful modern CLI applications as well as a program to generate applications and command files.
+
+.link https://github.com/spf13/cobra https://github.com/spf13/cobra
+- 
+
+* IDE support
+- Intellij IDEA ultimate with Go plugin *(recommended)*
+.link https://plugins.jetbrains.com/plugin/9568-go intellij-go
+- VS code with Go plugin
+.link https://github.com/Microsoft/vscode-go vscode-go
+- VIM with Go plugin
+.link https://github.com/fatih/vim-go vim-go
+
+* Links
+
+.link https://tour.golang.org/list A tour of Go
+.link https://gobyexample.com/hello-world Go by example
+.link https://golang.org/doc/effective_go.html Effective Go (must read!)
+.link https://talks.golang.org/2013/bestpractices.slide#1 Twelve Go Best Practices
+
+* GitHub
+.image qrcode.png
+.link https://github.com/djmarkoz/techday github.com/djmarkoz/techday

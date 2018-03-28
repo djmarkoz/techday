@@ -1,24 +1,19 @@
 # Golang Techday
 
+[Presentation slides]
+
 ----
 
 This git repository is a sample CLI application build with [Cobra] written in Go. 
-
-It contains the examples from the presentation. 
-
-Try adding new commands to the CLI.
-
-```
-cobra add doSomething
-```
+It also contains the [examples](docs/presentation/src) from the presentation.
  
-
 ## Installing Go
 
 ```
 brew install go
 brew install dep
 
+# Add these to your .profile
 export PATH=$PATH:$(go env GOPATH)/bin
 export GOPATH=$(go env GOPATH)
 ```
@@ -28,7 +23,7 @@ export GOPATH=$(go env GOPATH)
 go get -u github.com/spf13/cobra/cobra
 ```
 
-## Getting the Project
+## Getting and building this project
 ```
 go get -u -v -d github.com/djmarkoz/techday 
 cd $GOPATH/src/github.com/djmarkoz/techday
@@ -46,30 +41,40 @@ make
 7. **Press `Finish`**
 8. **Goto preferences;** `cmd+,`
 9. **`Tools` > `File Watchers` > press `+` > select `goimports`** > press `Ok`
- 
-----
 
-## Just Build and Run the project
+## Try adding new commands to the sample CLI. 😎
+
+```
+cd cmd/techday-cli
+cobra add newCommand
+```
+
+## Run the CLI
 
 If you want to build right away there are two options:
 
-##### You have a working [Go environment].
+##### From within Intellij
+
+1. Open `cmd/techday-cli/main.go`
+2. Press the play arrow before the `func main()` method 
+3. Press `Run`
+
+##### From the shell
+
+Either one of:
 
 ```
-$ go get -d github.com/djmarkoz/techday
-$ cd $GOPATH/src/github.com/djmarkoz/techday
-$ make
 $ ./bin/techday-cli
+$ make run
+$ make install && techday-cli #globally installed
 ```
 
-##### You have a working [Docker environment].
+##### In Docker (does not require Go, Dep or Cobra installed!)
 
 ```
-$ git clone https://github.com/djmarkoz/techday
-$ cd techday
+$ make docker
 $ make docker-run
 ```
-
 ----
 
 ## Package design
@@ -90,7 +95,45 @@ Some packages are likely to be reused by other projects and are like libraries. 
 
 ----
 
+## Makefile
+
+```
+Options:
+
+make
+    builds and tests the project
+    
+make build
+    builds the project
+    
+make clean
+    removes ./bin
+        
+make cleanall
+    removes ./bin and ./vender    
+
+make docker
+    builds a Docker image with the CLI (does not require Go, Dep or Cobra installed!)
+    
+make docker-run
+    runs the CLI Docker image
+        
+make install
+    installs binaries globally on $GOPATH/bin
+    
+make test
+    tests the project
+    
+make uninstall
+    removes binaries from $GOPATH/bin
+    
+make vendor
+    downloads the vendor dependencies
+```
+----
+
 [Cobra]: https://github.com/spf13/cobra
 [Docker environment]: https://docs.docker.com/engine
 [Go environment]: https://golang.org/doc/install
 [GoLand]: https://www.jetbrains.com/go/
+[Presentation slides]: https://go-talks.appspot.com/github.com/djmarkoz/techday/docs/presentation/techday.slide
