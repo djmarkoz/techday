@@ -110,7 +110,7 @@ make clean
     removes ./bin
         
 make cleanall
-    removes ./bin and ./vender    
+    removes ./bin and ./vendor    
 
 make docker
     builds a Docker image with the CLI (does not require Go, Dep or Cobra installed!)
